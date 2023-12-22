@@ -131,9 +131,9 @@ export default function Home({ initial_properties }) {
   const formatBORatio = (ratio) => {
     return ratio.toFixed(2);
   };
-
+  document.body.style.backgroundColor = 'black';
   return (
-    <TableContainer>
+    <TableContainer style={{ backgroundColor: 'black', color: 'white' }}>
       <Button onClick={sortPropertiesByUpdatedAt}>Sort by Updated At</Button>
       <Button onClick={sortPropertiesByBORatio}>Sort by B/O Ratio</Button>
       <Table>
