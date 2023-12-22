@@ -131,46 +131,48 @@ export default function Home({ initial_properties }) {
   const formatBORatio = (ratio) => {
     return ratio.toFixed(2);
   };
-  document.body.style.backgroundColor = 'black';
+
   return (
-    <TableContainer style={{ backgroundColor: 'black', color: 'white' }}>
-      <Button onClick={sortPropertiesByUpdatedAt}>Sort by Updated At</Button>
-      <Button onClick={sortPropertiesByBORatio}>Sort by B/O Ratio</Button>
-      <Table>
-        <thead>
-          <tr>
-            <Th>ID</Th>
-            <Th>Buff Min Price</Th>
-            <Th>B/O Ratio</Th>
-            <Th>Updated At</Th>
-            <Th>Actions</Th>
-          </tr>
-        </thead>
-        <tbody>
-          {properties.map((property) => (
-            <StyledTr
-              key={property.id}
-              backgroundColor={
-                property.b_o_ratio > 1.4
-                  ? 'darkgreen'
-                  : property.b_o_ratio > 1.35
-                  ? 'darkblue'
-                  : null
-              }
-            >
-              <Td>{property.id}</Td>
-              <Td>{property.buff_min_price}</Td>
-              <Td>{formatBORatio(property.b_o_ratio)}</Td>
-              <Td>{formatDateTime(property.updatedAt)}</Td>
-              <Td>
-                <Button onClick={() => window.open(property.buffUrl)}>Buff</Button>
-                <Button onClick={() => window.open(property.steamUrl)}>Steam</Button>
-              </Td>
-            </StyledTr>
-          ))}
-        </tbody>
-      </Table>
-    </TableContainer>
+    <div style={{ width: '100%', height: '100%', backgroundColor: 'black', color: 'black' }}>
+      <TableContainer style={{ backgroundColor: 'black', color: 'white' }}>
+        <Button onClick={sortPropertiesByUpdatedAt}>Sort by Updated At</Button>
+        <Button onClick={sortPropertiesByBORatio}>Sort by B/O Ratio</Button>
+        <Table>
+          <thead>
+            <tr>
+              <Th>ID</Th>
+              <Th>Buff Min Price</Th>
+              <Th>B/O Ratio</Th>
+              <Th>Updated At</Th>
+              <Th>Actions</Th>
+            </tr>
+          </thead>
+          <tbody>
+            {properties.map((property) => (
+              <StyledTr
+                key={property.id}
+                backgroundColor={
+                  property.b_o_ratio > 1.4
+                    ? 'darkgreen'
+                    : property.b_o_ratio > 1.35
+                    ? 'darkblue'
+                    : null
+                }
+              >
+                <Td>{property.id}</Td>
+                <Td>{property.buff_min_price}</Td>
+                <Td>{formatBORatio(property.b_o_ratio)}</Td>
+                <Td>{formatDateTime(property.updatedAt)}</Td>
+                <Td>
+                  <Button onClick={() => window.open(property.buffUrl)}>Buff</Button>
+                  <Button onClick={() => window.open(property.steamUrl)}>Steam</Button>
+                </Td>
+              </StyledTr>
+            ))}
+          </tbody>
+        </Table>
+      </TableContainer>
+    </div>
   );
 }
 
