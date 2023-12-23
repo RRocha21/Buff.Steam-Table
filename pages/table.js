@@ -118,13 +118,26 @@ export default function Home({ initial_properties }) {
     propertyRef.current = sortedProperties[0];
 
     if (!isFirstElementSame) {
-      playNotificationAudio();
+      if (sortedProperties[0].b_o_ratio > 1.4) {
+        playNotificationAudio('Green');
+      } else if (sortedProperties[0].b_o_ratio > 1.35) {
+        playNotificationAudio('Blue');
+      } else {
+        playNotificationAudio('Black');
+      }
     }
   };
 
-  const playNotificationAudio = () => {
+  const playNotificationAudio = (color) => {
     // Assuming you have an audio element with an id of "notificationSound"
-    const audioElement = document.getElementById('notificationSound');
+    let audioElement;
+    if (color === 'Green') {
+      audioElement = document.getElementById('notificationSoundGreen');
+    } else if (color === 'Blue') {
+      audioElement = document.getElementById('notificationSoundBlue');
+    } else {
+      audioElement = document.getElementById('notificationSoundBlack');
+    }
   
     // Check if the audio element exists
     if (audioElement) {
@@ -165,8 +178,16 @@ export default function Home({ initial_properties }) {
         <Button onClick={sortPropertiesByUpdatedAt}>Sort by Updated At</Button>
         <Button onClick={sortPropertiesByBORatio}>Sort by B/O Ratio</Button>
 
-        <audio id="notificationSound">
+        <audio id="notificationSoundBlack">
+          <source src="/Black.mp3" type="audio/mpeg" />
+          Your browser does not support the audio element.
+        </audio>
+        <audio id="notificationSoundGreen">
           <source src="/grito-gay.mp3" type="audio/mpeg" />
+          Your browser does not support the audio element.
+        </audio>
+        <audio id="notificationSoundBlue">
+          <source src="/Blue.mp3" type="audio/mpeg" />
           Your browser does not support the audio element.
         </audio>
 
