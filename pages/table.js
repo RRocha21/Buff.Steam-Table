@@ -183,7 +183,7 @@ export default function Home({ initial_properties }) {
           Your browser does not support the audio element.
         </audio>
         <audio id="notificationSoundGreen">
-          <source src="/grito-gay.mp3" type="audio/mpeg" />
+          <source src="/Green.mp3" type="audio/mpeg" />
           Your browser does not support the audio element.
         </audio>
         <audio id="notificationSoundBlue">
