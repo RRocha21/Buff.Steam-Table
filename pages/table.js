@@ -44,16 +44,18 @@ const StyledTr = styled.tr`
 export default function Home({ initial_properties }) {
   const [firstLoad, setFirstLoad] = useState(false);
   const [properties, setProperties] = useState([]);
+  const propertyRef = useRef();
   const toggleUpdatedAtRef = useRef(false);
   const toggleBORatioRef = useRef(false);
 
-  const fetchData = async () => {
+  const fetchData = async (properties) => {
     try {
       // Fetch updated data from MongoDB
       const response = await fetch('/api/getData');
       if (!response.ok) {
         throw new Error(`Error fetching data: ${response.statusText}`);
       }
+
       console.log('Fetching updated data...', toggleUpdatedAtRef.current, toggleBORatioRef.current);
       const updatedProperties = await response.json();
       const parsedUpdatedProperties = JSON.parse(JSON.stringify(updatedProperties));
@@ -79,8 +81,8 @@ export default function Home({ initial_properties }) {
   }, [initial_properties, firstLoad]);
 
   useEffect(() => {
-    setInterval((toggleUpdatedAt, toggleBORatio) => {
-      fetchData(toggleBORatio);
+    setInterval(() => {
+      fetchData();
     }, 5000);
   }, []);
 
@@ -90,6 +92,7 @@ export default function Home({ initial_properties }) {
     );
     toggleUpdatedAtRef.current = true;
     toggleBORatioRef.current = false;
+    propertyRef.current = sortedProperties[0];
     setProperties(sortedProperties);
   };
 
@@ -99,6 +102,7 @@ export default function Home({ initial_properties }) {
     );
     toggleBORatioRef.current = true;
     toggleUpdatedAtRef.current = false;
+    propertyRef.current = sortedProperties[0];
     setProperties(sortedProperties);
   };
 
@@ -106,7 +110,29 @@ export default function Home({ initial_properties }) {
     const sortedProperties = [...updatedProperties].sort(
       (a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)
     );
+    const currentProperties = propertyRef.current;
+
+    const isFirstElementSame = JSON.stringify(currentProperties) === JSON.stringify(sortedProperties[0]);
+
     setProperties(sortedProperties);
+    propertyRef.current = sortedProperties[0];
+
+    if (!isFirstElementSame) {
+      playNotificationAudio();
+    }
+  };
+
+  const playNotificationAudio = () => {
+    // Assuming you have an audio element with an id of "notificationSound"
+    const audioElement = document.getElementById('notificationSound');
+  
+    // Check if the audio element exists
+    if (audioElement) {
+      // Play the audio
+      audioElement.play();
+    } else {
+      console.error('Audio element not found!');
+    }
   };
 
   const sortPropertiesByBORatioFromAPI = (updatedProperties) => {
@@ -114,6 +140,7 @@ export default function Home({ initial_properties }) {
       (a, b) => b.b_o_ratio - a.b_o_ratio
     );
     setProperties(sortedProperties);
+    propertyRef.current = sortedProperties[0];
   };
 
   const formatDateTime = (dateTimeString) => {
@@ -137,6 +164,12 @@ export default function Home({ initial_properties }) {
       <TableContainer style={{ backgroundColor: 'black', color: 'white' }}>
         <Button onClick={sortPropertiesByUpdatedAt}>Sort by Updated At</Button>
         <Button onClick={sortPropertiesByBORatio}>Sort by B/O Ratio</Button>
+
+        <audio id="notificationSound">
+          <source src="/grito-gay.mp3" type="audio/mpeg" />
+          Your browser does not support the audio element.
+        </audio>
+
         <Table>
           <thead>
             <tr>
