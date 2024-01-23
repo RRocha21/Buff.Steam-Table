@@ -51,7 +51,7 @@ export default function Home({ initial_properties }) {
   const fetchData = async (properties) => {
     try {
       // Fetch updated data from MongoDB
-      const response = await fetch('/api/getData');
+      const response = await fetch('/api/getDataBuff');
       if (!response.ok) {
         throw new Error(`Error fetching data: ${response.statusText}`);
       }
