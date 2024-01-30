@@ -117,36 +117,36 @@ export default function Home({ initial_properties }) {
     setProperties(sortedProperties);
     propertyRef.current = sortedProperties[0];
 
-    // if (!isFirstElementSame) {
-    //   if (sortedProperties[0].b_o_ratio > 1.4) {
-    //     playNotificationAudio('Green');
-    //   } else if (sortedProperties[0].b_o_ratio > 1.35) {
-    //     playNotificationAudio('Blue');
-    //   } else {
-    //     playNotificationAudio('Black');
-    //   }
-    // }
+    if (!isFirstElementSame) {
+      // if (sortedProperties[0].b_o_ratio > 1.4) {
+      //   playNotificationAudio('Green');
+      // } else if (sortedProperties[0].b_o_ratio > 1.35) {
+      //   playNotificationAudio('Blue');
+      // } else {
+        playNotificationAudio('Black');
+      // }
+    }
   };
 
-  // const playNotificationAudio = (color) => {
-  //   // Assuming you have an audio element with an id of "notificationSound"
-  //   let audioElement;
-  //   if (color === 'Green') {
-  //     audioElement = document.getElementById('notificationSoundGreen');
-  //   } else if (color === 'Blue') {
-  //     audioElement = document.getElementById('notificationSoundBlue');
-  //   } else {
-  //     audioElement = document.getElementById('notificationSoundBlack');
-  //   }
+  const playNotificationAudio = (color) => {
+    // Assuming you have an audio element with an id of "notificationSound"
+    let audioElement;
+    if (color === 'Green') {
+      audioElement = document.getElementById('notificationSoundGreen');
+    } else if (color === 'Blue') {
+      audioElement = document.getElementById('notificationSoundBlue');
+    } else {
+      audioElement = document.getElementById('notificationSoundBlack');
+    }
   
-  //   // Check if the audio element exists
-  //   if (audioElement) {
-  //     // Play the audio
-  //     audioElement.play();
-  //   } else {
-  //     console.error('Audio element not found!');
-  //   }
-  // };
+    // Check if the audio element exists
+    if (audioElement) {
+      // Play the audio
+      audioElement.play();
+    } else {
+      console.error('Audio element not found!');
+    }
+  };
 
   // const sortPropertiesByBORatioFromAPI = (updatedProperties) => {
   //   const sortedProperties = [...updatedProperties].sort(
@@ -178,11 +178,11 @@ export default function Home({ initial_properties }) {
         <Button onClick={sortPropertiesByUpdatedAt}>Sort by Updated At</Button>
         {/* <Button onClick={sortPropertiesByBORatio}>Sort by B/O Ratio</Button> */}
 
-        {/* <audio id="notificationSoundBlack">
+        <audio id="notificationSoundBlack">
           <source src="/Black.mp3" type="audio/mpeg" />
           Your browser does not support the audio element.
         </audio>
-        <audio id="notificationSoundGreen">
+        {/* <audio id="notificationSoundGreen">
           <source src="/Green.mp3" type="audio/mpeg" />
           Your browser does not support the audio element.
         </audio>
