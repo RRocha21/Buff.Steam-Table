@@ -231,12 +231,12 @@ export default function Home({ initial_properties }) {
 }
 
 export async function getStaticProps({ params }) {
-  // const { db } = await connectToDatabase();
-  data = [];
+  const { db } = await connectToDatabase();
+  // data = [];
   let properties = [];
-  if (data) {
-    properties = JSON.parse(JSON.stringify(data));
-  }
+  // if (data) {
+  //   properties = JSON.parse(JSON.stringify(data));
+  // }
 
   return {
     props: { initial_properties: properties },
