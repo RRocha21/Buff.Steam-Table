@@ -3,6 +3,7 @@ import { connectToDatabase } from '../util/mongodb';
 import styled from 'styled-components';
 import { useState, useEffect, useRef} from 'react';
 import 'dotenv/config';
+import { format, isValid } from 'date-fns';
 import fetch from 'isomorphic-unfetch';
 
 
@@ -56,9 +57,11 @@ export default function Home({ initial_properties }) {
         throw new Error(`Error fetching data: ${response.statusText}`);
       }
 
-      console.log('Fetching updated data...', toggleUpdatedAtRef.current, toggleBORatioRef.current);
+
       const updatedProperties = await response.json();
+
       const parsedUpdatedProperties = JSON.parse(JSON.stringify(updatedProperties));
+
       if (toggleUpdatedAtRef.current) {
         sortPropertiesByUpdatedAtFromAPI(parsedUpdatedProperties);
       } else if (toggleBORatioRef.current) {
@@ -88,7 +91,7 @@ export default function Home({ initial_properties }) {
 
   const sortPropertiesByUpdatedAt = () => {
     const sortedProperties = [...properties].sort(
-      (a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)
+      (a, b) => new Date(b.updatedat) - new Date(a.updatedat)
     );
     toggleUpdatedAtRef.current = true;
     toggleBORatioRef.current = false;
@@ -108,7 +111,7 @@ export default function Home({ initial_properties }) {
 
   const sortPropertiesByUpdatedAtFromAPI = (updatedProperties) => {
     const sortedProperties = [...updatedProperties].sort(
-      (a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)
+      (a, b) => new Date(b.updatedat) - new Date(a.updatedat)
     );
     const currentProperties = propertyRef.current;
 
@@ -156,17 +159,20 @@ export default function Home({ initial_properties }) {
   //   propertyRef.current = sortedProperties[0];
   // };
 
+  // ...
+  
   const formatDateTime = (dateTimeString) => {
-    const options = {
-      hour: 'numeric',
-      minute: 'numeric',
-      second: 'numeric',
-      day: 'numeric',
-      month: 'numeric',
-      year: 'numeric',
-    };
-    return new Date(dateTimeString).toLocaleString('PT', options);
+    const parsedDate = new Date(dateTimeString);
+  
+    if (!isValid(parsedDate)) {
+      console.error('Invalid date string:', dateTimeString);
+      return 'Invalid Date';
+    }
+  
+    const formattedDate = format(parsedDate, "yyyy-MM-dd HH:mm:ss");
+    return formattedDate;
   };
+  
 
   const formatBORatio = (ratio) => {
     return ratio.toFixed(2);
@@ -211,7 +217,7 @@ export default function Home({ initial_properties }) {
                 <Td>{property.price}</Td>
                 <Td>{property.currency}</Td>
                 <Td>{property.float_value}</Td>
-                <Td>{formatDateTime(property.updatedAt)}</Td>
+                <Td>{formatDateTime(property.updatedat)}</Td>
                 <Td>
                   <Button onClick={() => window.open(property.link)}>Steam</Button>
                 </Td>

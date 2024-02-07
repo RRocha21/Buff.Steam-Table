@@ -1,9 +1,20 @@
-import { connectToDatabase } from '../../util/mongodb';
+import { connectDb, disconnectDb } from '../../util/db';
 
 export default async function handler(req, res) {
-  const { db } = await connectToDatabase();
-  const data = await db.collection('Steam2Buff').find({}).toArray();
-  const properties = JSON.parse(JSON.stringify(data));
+  let client;
 
-  res.status(200).json(properties);
+  try {
+    client = await connectDb();
+    const result = await client.query('SELECT * FROM Steam2Buff');
+    const properties = result.rows;
+
+    res.status(200).json(properties);
+  } catch (error) {
+    console.error('Error querying PostgreSQL:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  } finally {
+    if (client) {
+      disconnectDb(client);
+    }
+  }
 }
