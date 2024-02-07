@@ -231,8 +231,8 @@ export default function Home({ initial_properties }) {
 }
 
 export async function getStaticProps({ params }) {
-  const { db } = await connectToDatabase();
-  const data = await db.collection('Steam2Buff').find({}).toArray();
+  // const { db } = await connectToDatabase();
+  data = [];
   let properties = [];
   if (data) {
     properties = JSON.parse(JSON.stringify(data));
