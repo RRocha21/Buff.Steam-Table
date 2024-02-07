@@ -8,9 +8,9 @@ const pool = new Pool({
   database: 'Pool1',
   password: 'AVNS_GRvfxsqSGM1kpyI0Gqr',
   port: 25061, // your PostgreSQL port
-//   ssl: {
-//     rejectUnauthorized: false, // Use only in development if your PostgreSQL server uses self-signed certificates
-//   },
+  ssl: {
+    rejectUnauthorized: false, // Use only in development if your PostgreSQL server uses self-signed certificates
+  },
 });
 
 export const connectDb = async () => {
