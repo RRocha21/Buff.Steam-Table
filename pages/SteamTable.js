@@ -83,7 +83,7 @@ export default function Home({ initial_properties }) {
   useEffect(() => {
     setInterval(() => {
       fetchData();
-    }, 5000);
+    }, 500);
   }, []);
 
   const sortPropertiesByUpdatedAt = () => {
