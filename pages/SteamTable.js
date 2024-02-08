@@ -86,7 +86,7 @@ export default function Home({ initial_properties }) {
   useEffect(() => {
     setInterval(() => {
       fetchData();
-    }, 500);
+    }, 2000);
   }, []);
 
   const sortPropertiesByUpdatedAt = () => {
