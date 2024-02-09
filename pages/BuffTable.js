@@ -48,17 +48,13 @@ export default function Home({ initial_properties }) {
   const toggleUpdatedAtRef = useRef(false);
   const toggleBORatioRef = useRef(false);
 
-  const fetchData = async (properties) => {
-    try {
-      // Fetch updated data from MongoDB
-      const response = await fetch('/api/getDataBuff');
-      if (!response.ok) {
-        throw new Error(`Error fetching data: ${response.statusText}`);
-      }
+  useEffect(() => {
+    const socket = io(); // Connect to the WebSocket server
 
-      console.log('Fetching updated data...', toggleUpdatedAtRef.current, toggleBORatioRef.current);
-      const updatedProperties = await response.json();
-      const parsedUpdatedProperties = JSON.parse(JSON.stringify(updatedProperties));
+    // Listen for updates from the server
+    socket.on('dataUpdate', (updatedProperties) => {
+      setProperties(updatedProperties);
+
       if (toggleUpdatedAtRef.current) {
         sortPropertiesByUpdatedAtFromAPI(parsedUpdatedProperties);
       } else if (toggleBORatioRef.current) {
@@ -66,10 +62,14 @@ export default function Home({ initial_properties }) {
       } else {
         setProperties(parsedUpdatedProperties);
       }
-    } catch (error) {
-      console.error('Error fetching data:', error.message);
-    }
-  };
+    });
+
+    // Clean up the socket connection when the component is unmounted
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
+
 
   useEffect(() => {
     setTimeout(() => {
