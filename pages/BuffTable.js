@@ -3,6 +3,7 @@ import { connectToDatabase } from '../util/mongodb';
 import styled from 'styled-components';
 import { useState, useEffect, useRef} from 'react';
 import 'dotenv/config';
+import { format, isValid } from 'date-fns';
 import fetch from 'isomorphic-unfetch';
 
 
@@ -48,12 +49,18 @@ export default function Home({ initial_properties }) {
   const toggleUpdatedAtRef = useRef(false);
   const toggleBORatioRef = useRef(false);
 
-  useEffect(() => {
-    const socket = io(); // Connect to the WebSocket server
+  const fetchData = async (properties) => {
+    try {
+      // Fetch updated data from MongoDB
+      const response = await fetch('/api/getDataBuff');
+      if (!response.ok) {
+        throw new Error(`Error fetching data: ${response.statusText}`);
+      }
 
-    // Listen for updates from the server
-    socket.on('dataUpdate', (updatedProperties) => {
-      setProperties(updatedProperties);
+
+      const updatedProperties = await response.json();
+
+      const parsedUpdatedProperties = JSON.parse(JSON.stringify(updatedProperties));
 
       if (toggleUpdatedAtRef.current) {
         sortPropertiesByUpdatedAtFromAPI(parsedUpdatedProperties);
@@ -62,14 +69,10 @@ export default function Home({ initial_properties }) {
       } else {
         setProperties(parsedUpdatedProperties);
       }
-    });
-
-    // Clean up the socket connection when the component is unmounted
-    return () => {
-      socket.disconnect();
-    };
-  }, []);
-
+    } catch (error) {
+      console.error('Error fetching data:', error.message);
+    }
+  };
 
   useEffect(() => {
     setTimeout(() => {
@@ -83,12 +86,12 @@ export default function Home({ initial_properties }) {
   useEffect(() => {
     setInterval(() => {
       fetchData();
-    }, 5000);
+    }, 2000);
   }, []);
 
   const sortPropertiesByUpdatedAt = () => {
     const sortedProperties = [...properties].sort(
-      (a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)
+      (a, b) => new Date(b.updatedat) - new Date(a.updatedat)
     );
     toggleUpdatedAtRef.current = true;
     toggleBORatioRef.current = false;
@@ -108,7 +111,7 @@ export default function Home({ initial_properties }) {
 
   const sortPropertiesByUpdatedAtFromAPI = (updatedProperties) => {
     const sortedProperties = [...updatedProperties].sort(
-      (a, b) => new Date(b.updatedAt) - new Date(a.updatedAt)
+      (a, b) => new Date(b.updatedat) - new Date(a.updatedat)
     );
     const currentProperties = propertyRef.current;
 
@@ -156,17 +159,20 @@ export default function Home({ initial_properties }) {
     propertyRef.current = sortedProperties[0];
   };
 
+  // ...
+  
   const formatDateTime = (dateTimeString) => {
-    const options = {
-      hour: 'numeric',
-      minute: 'numeric',
-      second: 'numeric',
-      day: 'numeric',
-      month: 'numeric',
-      year: 'numeric',
-    };
-    return new Date(dateTimeString).toLocaleString('PT', options);
+    const parsedDate = new Date(dateTimeString);
+  
+    if (!isValid(parsedDate)) {
+      console.error('Invalid date string:', dateTimeString);
+      return 'Invalid Date';
+    }
+  
+    const formattedDate = format(parsedDate, "yyyy-MM-dd HH:mm:ss");
+    return formattedDate;
   };
+  
 
   const formatBORatio = (ratio) => {
     return ratio.toFixed(2);
@@ -194,9 +200,12 @@ export default function Home({ initial_properties }) {
         <Table>
           <thead>
             <tr>
-              <Th>ID</Th>
+              <Th>Id</Th>
+              <Th>Name</Th>
               <Th>Buff Min Price</Th>
-              <Th>B/O Ratio</Th>
+              <Th>Steam Price (CNY)</Th>
+              <Th>Steam Price (EUR)</Th>
+              <Th>BO Ratio</Th>
               <Th>Updated At</Th>
               <Th>Actions</Th>
             </tr>
@@ -214,12 +223,15 @@ export default function Home({ initial_properties }) {
                 }
               >
                 <Td>{property.id}</Td>
+                <Td>{property.name}</Td>
                 <Td>{property.buff_min_price}</Td>
-                <Td>{formatBORatio(property.b_o_ratio)}</Td>
-                <Td>{formatDateTime(property.updatedAt)}</Td>
+                <Td>{property.steam_price_cny}</Td>
+                <Td>{property.steam_price_eur}</Td>
+                <Td>{property.b_o_ratio}</Td>
+                <Td>{formatDateTime(property.updatedat)}</Td>
                 <Td>
-                  <Button onClick={() => window.open(property.buffUrl)}>Buff</Button>
-                  <Button onClick={() => window.open(property.steamUrl)}>Steam</Button>
+                  <Button onClick={() => window.open(property.buffurl)}>Buff</Button>
+                  <Button onClick={() => window.open(property.steamurl)}>Steam</Button>
                 </Td>
               </StyledTr>
             ))}
@@ -232,11 +244,11 @@ export default function Home({ initial_properties }) {
 
 export async function getStaticProps({ params }) {
   const { db } = await connectToDatabase();
-  const data = await db.collection('Buff2Steam').find({}).toArray();
+  // data = [];
   let properties = [];
-  if (data) {
-    properties = JSON.parse(JSON.stringify(data));
-  }
+  // if (data) {
+  //   properties = JSON.parse(JSON.stringify(data));
+  // }
 
   return {
     props: { initial_properties: properties },

@@ -1,9 +1,36 @@
-import { connectToDatabase } from '../../util/mongodb';
+import { connectDb, disconnectDb } from '../../util/db';
+import { WebSocketServer } from 'ws';
+
+const wss = new WebSocketServer({ noServer: true });
+
+wss.on('connection', (ws) => {
+  ws.on('message', (message) => {
+    console.log(`Received message: ${message}`);
+  });
+});
 
 export default async function handler(req, res) {
-  const { db } = await connectToDatabase();
-  const data = await db.collection('Buff2Steam').find({}).toArray();
-  const properties = JSON.parse(JSON.stringify(data));
+  let client;
 
-  res.status(200).json(properties);
+  try {
+    client = await connectDb();
+    const result = await client.query('SELECT * FROM buff2steams');
+    const properties = result.rows;
+
+    // Send updated data to connected clients
+    wss.clients.forEach((client) => {
+      if (client.readyState === WebSocket.OPEN) {
+        client.send(JSON.stringify(properties));
+      }
+    });
+
+    res.status(200).json(properties);
+  } catch (error) {
+    console.error('Error querying PostgreSQL:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  } finally {
+    if (client) {
+      disconnectDb(client);
+    }
+  }
 }
