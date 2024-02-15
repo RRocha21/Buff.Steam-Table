@@ -126,7 +126,9 @@ export default function Home({ initial_properties }) {
       // } else if (sortedProperties[0].b_o_ratio > 1.35) {
       //   playNotificationAudio('Blue');
       // } else {
+      if (sortedProperties[0].price !== 0.0) {
         playNotificationAudio('Black');
+      }
       // }
     }
   };
