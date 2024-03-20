@@ -13,15 +13,16 @@ export default async function handler(req, res) {
   try {
     // Fetch data from the external server
     const response = await fetch('http://144.64.9.162:8000/buff2steam');
-    const properties = await response.json();
-
+    
+    const data = await response.json();
+    
     // Send response to HTTP request
-    res.status(200).json(properties);
+    res.status(200).json(data);
 
     // Send updated data to connected WebSocket clients
     wss.clients.forEach((client) => {
       if (client.readyState === WebSocket.OPEN) {
-        client.send(JSON.stringify(properties));
+        client.send(JSON.stringify(data)); // Send JSON string
       }
     });
   } catch (error) {

@@ -86,7 +86,7 @@ export default function Home({ initial_properties }) {
 
   const sortPropertiesByUpdatedAt = () => {
     const sortedProperties = [...properties].sort(
-      (a, b) => new Date(b.updatedat) - new Date(a.updatedat)
+      (a, b) => new Date(b[8]) - new Date(a[8])
     );
     toggleUpdatedAtRef.current = true;
     toggleBORatioRef.current = false;
@@ -96,7 +96,7 @@ export default function Home({ initial_properties }) {
 
   const sortPropertiesByBORatio = () => {
     const sortedProperties = [...properties].sort(
-      (a, b) => b.b_o_ratio - a.b_o_ratio
+      (a, b) => b[5] - a[5]
     );
     toggleBORatioRef.current = true;
     toggleUpdatedAtRef.current = false;
@@ -106,7 +106,7 @@ export default function Home({ initial_properties }) {
 
   const sortPropertiesByUpdatedAtFromAPI = (updatedProperties) => {
     const sortedProperties = [...updatedProperties].sort(
-      (a, b) => new Date(b.updatedat) - new Date(a.updatedat)
+      (a, b) => new Date(b[8]) - new Date(a[8])
     );
     const currentProperties = propertyRef.current;
 
@@ -116,9 +116,9 @@ export default function Home({ initial_properties }) {
     propertyRef.current = sortedProperties[0];
 
     if (!isFirstElementSame) {
-      if (sortedProperties[0].b_o_ratio > 1.4) {
+      if (sortedProperties[0][5] > 1.4) {
         playNotificationAudio('Green');
-      } else if (sortedProperties[0].b_o_ratio > 1.35) {
+      } else if (sortedProperties[0][5] > 1.35) {
         playNotificationAudio('Blue');
       } else {
         playNotificationAudio('Black');
@@ -148,7 +148,7 @@ export default function Home({ initial_properties }) {
 
   const sortPropertiesByBORatioFromAPI = (updatedProperties) => {
     const sortedProperties = [...updatedProperties].sort(
-      (a, b) => b.b_o_ratio - a.b_o_ratio
+      (a, b) => b[5] - a[5]
     );
     setProperties(sortedProperties);
     propertyRef.current = sortedProperties[0];
@@ -217,16 +217,16 @@ export default function Home({ initial_properties }) {
                     : null
                 }
               >
-                <Td>{property.id}</Td>
-                <Td>{property.name}</Td>
-                <Td>{property.buff_min_price}</Td>
-                <Td>{property.steam_price_cny}</Td>
-                <Td>{property.steam_price_eur}</Td>
-                <Td>{property.b_o_ratio}</Td>
-                <Td>{formatDateTime(property.updatedat)}</Td>
+                <Td>{property[0]}</Td>
+                <Td>{property[1]}</Td>
+                <Td>{property[2]}</Td>
+                <Td>{property[3]}</Td>
+                <Td>{property[4]}</Td>
+                <Td>{property[5]}</Td>
+                <Td>{formatDateTime(property[8])}</Td>
                 <Td>
-                  <Button onClick={() => window.open(property.buffurl)}>Buff</Button>
-                  <Button onClick={() => window.open(property.steamurl)}>Steam</Button>
+                  <Button onClick={() => window.open(property[7])}>Buff</Button>
+                  <Button onClick={() => window.open(property[6])}>Steam</Button>
                 </Td>
               </StyledTr>
             ))}

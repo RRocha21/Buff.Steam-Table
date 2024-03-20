@@ -52,10 +52,6 @@ export default function Home({ initial_properties }) {
     try {
       // Fetch updated data from MongoDB
       const response = await fetch('/api/getDataSteam');
-      if (!response.ok) {
-        throw new Error(`Error fetching data: ${response.statusText}`);
-      }
-
 
       const updatedProperties = await response.json();
 
@@ -90,7 +86,7 @@ export default function Home({ initial_properties }) {
 
   const sortPropertiesByUpdatedAt = () => {
     const sortedProperties = [...properties].sort(
-      (a, b) => new Date(b.updatedat) - new Date(a.updatedat)
+      (a, b) => new Date(b[6]) - new Date(a[6])
     );
     toggleUpdatedAtRef.current = true;
     toggleBORatioRef.current = false;
@@ -110,7 +106,7 @@ export default function Home({ initial_properties }) {
 
   const sortPropertiesByUpdatedAtFromAPI = (updatedProperties) => {
     const sortedProperties = [...updatedProperties].sort(
-      (a, b) => new Date(b.updatedat) - new Date(a.updatedat)
+      (a, b) => new Date(b[6]) - new Date(a[6])
     );
     const currentProperties = propertyRef.current;
 
@@ -214,13 +210,13 @@ export default function Home({ initial_properties }) {
               <StyledTr
                 key={property.id}
               >
-                <Td>{property.id}</Td>
-                <Td>{property.price}</Td>
-                <Td>{property.currency}</Td>
-                <Td>{property.float_value}</Td>
-                <Td>{formatDateTime(property.updatedat)}</Td>
+                <Td>{property[0]}</Td>
+                <Td>{property[2]}</Td>
+                <Td>{property[3]}</Td>
+                <Td>{property[5]}</Td>
+                <Td>{formatDateTime(property[6])}</Td>
                 <Td>
-                  <Button onClick={() => window.open(property.link)}>Steam</Button>
+                  <Button onClick={() => window.open(property[5])}>Steam</Button>
                 </Td>
               </StyledTr>
             ))}
