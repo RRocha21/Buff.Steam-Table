@@ -216,7 +216,7 @@ export default function Home({ initial_properties }) {
                 <Td>{property[5]}</Td>
                 <Td>{formatDateTime(property[6])}</Td>
                 <Td>
-                  <Button onClick={() => window.open(property[5])}>Steam</Button>
+                  <Button onClick={() => window.open(property[4])}>Steam</Button>
                 </Td>
               </StyledTr>
             ))}
