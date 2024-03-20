@@ -51,7 +51,7 @@ export default function Home({ initial_properties }) {
   const fetchData = async (properties) => {
     try {
       // Fetch updated data from MongoDB
-      const response = await fetch('http://144.64.9.162:8000/steam2buff');
+      const response = await fetch('/api/getDataSteam');
       if (!response.ok) {
         throw new Error(`Error fetching data: ${response.statusText}`);
       }
