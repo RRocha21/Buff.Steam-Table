@@ -232,7 +232,6 @@ export default function Home({ initial_properties }) {
 }
 
 export async function getStaticProps({ params }) {
-  const { db } = await connectToDatabase();
   // data = [];
   let properties = [];
   // if (data) {
