@@ -2,7 +2,7 @@ import Head from 'next/head';
 import styled from 'styled-components';
 import { useState, useEffect, useRef} from 'react';
 import 'dotenv/config';
-import { format, isValid } from 'date-fns';
+import { format, isValid, set } from 'date-fns';
 import fetch from 'isomorphic-unfetch';
 
 
@@ -73,6 +73,7 @@ export default function Home({ initial_properties }) {
     setTimeout(() => {
       if (!firstLoad) {
         setProperties(initial_properties);
+        fetchData();
         setFirstLoad(true);
       }
     }, 2500);
@@ -105,6 +106,7 @@ export default function Home({ initial_properties }) {
   };
 
   const sortPropertiesByUpdatedAtFromAPI = (updatedProperties) => {
+    setProperties([]);
     const sortedProperties = [...updatedProperties].sort(
       (a, b) => new Date(b.updatedat) - new Date(a.updatedat)
     );

@@ -59,8 +59,6 @@ export default function Home({ initial_properties }) {
 
       if (toggleUpdatedAtRef.current) {
         sortPropertiesByUpdatedAtFromAPI(parsedUpdatedProperties);
-      } else if (toggleBORatioRef.current) {
-        sortPropertiesByBORatioFromAPI(parsedUpdatedProperties);
       } else {
         setProperties(parsedUpdatedProperties);
       }
@@ -73,6 +71,7 @@ export default function Home({ initial_properties }) {
     setTimeout(() => {
       if (!firstLoad) {
         setProperties(initial_properties);
+        fetchData();
         setFirstLoad(true);
       }
     }, 2500);
@@ -121,7 +120,7 @@ export default function Home({ initial_properties }) {
       // } else if (sortedProperties[0].b_o_ratio > 1.35) {
       //   playNotificationAudio('Blue');
       // } else {
-      if (sortedProperties[0][3] !== 'SOLD') {
+      if (sortedProperties[0].currency !== 'SOLD') {
         playNotificationAudio('Black');
       }
       // }
