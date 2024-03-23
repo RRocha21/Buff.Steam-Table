@@ -86,7 +86,7 @@ export default function Home({ initial_properties }) {
 
   const sortPropertiesByUpdatedAt = () => {
     const sortedProperties = [...properties].sort(
-      (a, b) => new Date(b[6]) - new Date(a[6])
+      (a, b) => new Date(b.updatedat) - new Date(a.updatedat)
     );
     toggleUpdatedAtRef.current = true;
     toggleBORatioRef.current = false;
@@ -106,7 +106,7 @@ export default function Home({ initial_properties }) {
 
   const sortPropertiesByUpdatedAtFromAPI = (updatedProperties) => {
     const sortedProperties = [...updatedProperties].sort(
-      (a, b) => new Date(b[6]) - new Date(a[6])
+      (a, b) => new Date(b.updatedat) - new Date(a.updatedat)
     );
     const currentProperties = propertyRef.current;
 
@@ -210,13 +210,13 @@ export default function Home({ initial_properties }) {
               <StyledTr
                 key={property.id}
               >
-                <Td>{property[0]}</Td>
-                <Td>{property[2]}</Td>
-                <Td>{property[3]}</Td>
-                <Td>{property[5]}</Td>
-                <Td>{formatDateTime(property[6])}</Td>
+                <Td>{property.id}</Td>
+                <Td>{property.price.toFixed(2)}</Td>
+                <Td>{property.currency}</Td>
+                <Td>{property.float_value}</Td>
+                <Td>{formatDateTime(property.updatedat)}</Td>
                 <Td>
-                  <Button onClick={() => window.open(property[4])}>Steam</Button>
+                  <Button onClick={() => window.open(property.link)}>Steam</Button>
                 </Td>
               </StyledTr>
             ))}
