@@ -86,7 +86,7 @@ export default function Home({ initial_properties }) {
   }, []);
 
   const sortPropertiesByUpdatedAt = () => {
-    const sortedProperties = [...properties].sort(
+    const sortedProperties = properties.sort(
       (a, b) => new Date(b.updatedat) - new Date(a.updatedat)
     );
     toggleUpdatedAtRef.current = true;
@@ -96,7 +96,7 @@ export default function Home({ initial_properties }) {
   };
 
   const sortPropertiesByBORatio = () => {
-    const sortedProperties = [...properties].sort(
+    const sortedProperties = properties.sort(
       (a, b) => b.b_o_ratio - a.b_o_ratio
     );
     toggleBORatioRef.current = true;
@@ -107,7 +107,7 @@ export default function Home({ initial_properties }) {
 
   const sortPropertiesByUpdatedAtFromAPI = (updatedProperties) => {
     setProperties([]);
-    const sortedProperties = [...updatedProperties].sort(
+    const sortedProperties = updatedProperties.sort(
       (a, b) => new Date(b.updatedat) - new Date(a.updatedat)
     );
     const currentProperties = propertyRef.current;
