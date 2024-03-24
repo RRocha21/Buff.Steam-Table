@@ -54,9 +54,9 @@ export default function Home({ initial_properties }) {
 
       const parsedUpdatedProperties = JSON.parse(JSON.stringify(updatedProperties));
 
-      if (sortedProperties[0].b_o_ratio > 1.4) {
+      if (parsedUpdatedProperties[0].b_o_ratio > 1.4) {
         playNotificationAudio('Green');
-      } else if (sortedProperties[0].b_o_ratio > 1.35) {
+      } else if (parsedUpdatedProperties[0].b_o_ratio > 1.35) {
         playNotificationAudio('Blue');
       } else {
         playNotificationAudio('Black');
