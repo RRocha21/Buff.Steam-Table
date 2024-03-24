@@ -44,6 +44,7 @@ const StyledTr = styled.tr`
 export default function Home({ initial_properties }) {
   const [firstLoad, setFirstLoad] = useState(false);
   const [properties, setProperties] = useState([]);
+  const currentTopProperty = useRef(null);
 
   const fetchData = async (properties) => {
     try {
@@ -54,13 +55,19 @@ export default function Home({ initial_properties }) {
 
       const parsedUpdatedProperties = JSON.parse(JSON.stringify(updatedProperties));
 
-      if (parsedUpdatedProperties[0].b_o_ratio > 1.4) {
-        playNotificationAudio('Green');
-      } else if (parsedUpdatedProperties[0].b_o_ratio > 1.35) {
-        playNotificationAudio('Blue');
-      } else {
-        playNotificationAudio('Black');
+      const isFirstElementSame = JSON.stringify(currentTopProperty) === JSON.stringify(parsedUpdatedProperties[0]);
+
+      if (!isFirstElementSame) {
+        if (parsedUpdatedProperties[0].b_o_ratio > 1.4) {
+          playNotificationAudio('Green');
+        } else if (parsedUpdatedProperties[0].b_o_ratio > 1.35) {
+          playNotificationAudio('Blue');
+        } else {
+          playNotificationAudio('Black');
+        }
       }
+
+      currentTopProperty.current = parsedUpdatedProperties[0];
 
       setProperties(parsedUpdatedProperties);
 
@@ -143,6 +150,7 @@ export default function Home({ initial_properties }) {
         <Table>
           <thead>
             <tr>
+              <Th>UUID</Th>
               <Th>Id</Th>
               <Th>Name</Th>
               <Th>Buff Min Price</Th>
@@ -165,6 +173,7 @@ export default function Home({ initial_properties }) {
                     : null
                 }
               >
+                <Td>{property.uuid}</Td>
                 <Td>{property.id}</Td>
                 <Td>{property.name}</Td>
                 <Td>{property.buff_min_price.toFixed(2)}</Td>

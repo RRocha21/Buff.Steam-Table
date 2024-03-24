@@ -44,9 +44,7 @@ const StyledTr = styled.tr`
 export default function Home({ initial_properties }) {
   const [firstLoad, setFirstLoad] = useState(false);
   const [properties, setProperties] = useState([]);
-  const propertyRef = useRef();
-  const toggleUpdatedAtRef = useRef(false);
-  const toggleBORatioRef = useRef(false);
+  const currentTopProperty = useRef(null);
 
   const fetchData = async (properties) => {
     try {
@@ -57,11 +55,18 @@ export default function Home({ initial_properties }) {
 
       const parsedUpdatedProperties = JSON.parse(JSON.stringify(updatedProperties));
 
-      if (toggleUpdatedAtRef.current) {
-        sortPropertiesByUpdatedAtFromAPI(parsedUpdatedProperties);
-      } else {
-        setProperties(parsedUpdatedProperties);
+      const isFirstElementSame = JSON.stringify(currentTopProperty) === JSON.stringify(parsedUpdatedProperties[0]);
+
+      if (!isFirstElementSame) {
+        if (parsedUpdatedProperties[0].currency !== 'SOLD') {
+          playNotificationAudio('Black');
+        }
       }
+
+      currentTopProperty.current = parsedUpdatedProperties[0];
+        
+      setProperties(parsedUpdatedProperties);
+      
     } catch (error) {
       console.error('Error fetching data:', error.message);
     }
@@ -83,49 +88,6 @@ export default function Home({ initial_properties }) {
     }, 60000);
   }, []);
 
-  const sortPropertiesByUpdatedAt = () => {
-    const sortedProperties = properties.sort(
-      (a, b) => new Date(b.updatedat) - new Date(a.updatedat)
-    );
-    toggleUpdatedAtRef.current = true;
-    toggleBORatioRef.current = false;
-    propertyRef.current = sortedProperties[0];
-    setProperties(sortedProperties);
-  };
-
-  // const sortPropertiesByBORatio = () => {
-  //   const sortedProperties = [...properties].sort(
-  //     (a, b) => b.b_o_ratio - a.b_o_ratio
-  //   );
-  //   toggleBORatioRef.current = true;
-  //   toggleUpdatedAtRef.current = false;
-  //   propertyRef.current = sortedProperties[0];
-  //   setProperties(sortedProperties);
-  // };
-
-  const sortPropertiesByUpdatedAtFromAPI = (updatedProperties) => {
-    const sortedProperties = updatedProperties.sort(
-      (a, b) => new Date(b.updatedat) - new Date(a.updatedat)
-    );
-    const currentProperties = propertyRef.current;
-
-    const isFirstElementSame = JSON.stringify(currentProperties) === JSON.stringify(sortedProperties[0]);
-
-    setProperties(sortedProperties);
-    propertyRef.current = sortedProperties[0];
-
-    if (!isFirstElementSame) {
-      // if (sortedProperties[0].b_o_ratio > 1.4) {
-      //   playNotificationAudio('Green');
-      // } else if (sortedProperties[0].b_o_ratio > 1.35) {
-      //   playNotificationAudio('Blue');
-      // } else {
-      if (sortedProperties[0].currency !== 'SOLD') {
-        playNotificationAudio('Black');
-      }
-      // }
-    }
-  };
 
   const playNotificationAudio = (color) => {
     // Assuming you have an audio element with an id of "notificationSound"
@@ -146,16 +108,6 @@ export default function Home({ initial_properties }) {
       console.error('Audio element not found!');
     }
   };
-
-  // const sortPropertiesByBORatioFromAPI = (updatedProperties) => {
-  //   const sortedProperties = [...updatedProperties].sort(
-  //     (a, b) => b.b_o_ratio - a.b_o_ratio
-  //   );
-  //   setProperties(sortedProperties);
-  //   propertyRef.current = sortedProperties[0];
-  // };
-
-  // ...
   
   const formatDateTime = (dateTimeString) => {
     const parsedDate = new Date(dateTimeString);
@@ -184,14 +136,6 @@ export default function Home({ initial_properties }) {
           <source src="/Black.mp3" type="audio/mpeg" />
           Your browser does not support the audio element.
         </audio>
-        {/* <audio id="notificationSoundGreen">
-          <source src="/Green.mp3" type="audio/mpeg" />
-          Your browser does not support the audio element.
-        </audio>
-        <audio id="notificationSoundBlue">
-          <source src="/Blue.mp3" type="audio/mpeg" />
-          Your browser does not support the audio element.
-        </audio> */}
 
         <Table>
           <thead>
