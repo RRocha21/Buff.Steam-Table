@@ -86,15 +86,9 @@ export default function Home({ initial_properties }) {
   }, []);
 
   const sortPropertiesByUpdatedAt = () => {
-    const sortedProperties = updatedProperties.sort((a, b) => {
-      const dateComparison = new Date(b.updatedat) - new Date(a.updatedat);
-      if (dateComparison === 0) {
-        // Dates are equal, use another property for comparison
-        // For example, if there's an 'id' property, you could use that
-        return a.id - b.id; // Replace 'id' with the actual property you want to use
-      }
-      return dateComparison;
-    });
+    const sortedProperties = properties.sort(
+      (a, b) => new Date(b.uuid) - new Date(a.uuid)
+    );
     toggleUpdatedAtRef.current = true;
     toggleBORatioRef.current = false;
     propertyRef.current = sortedProperties[0];
@@ -119,15 +113,9 @@ export default function Home({ initial_properties }) {
 
   const sortPropertiesByUpdatedAtFromAPI = (updatedProperties) => {
     setProperties([]);
-    const sortedProperties = updatedProperties.sort((a, b) => {
-      const dateComparison = new Date(b.updatedat) - new Date(a.updatedat);
-      if (dateComparison === 0) {
-        // Dates are equal, use another property for comparison
-        // For example, if there's an 'id' property, you could use that
-        return a.id - b.id; // Replace 'id' with the actual property you want to use
-      }
-      return dateComparison;
-    });
+    const sortedProperties = properties.sort(
+      (a, b) => new Date(b.uuid) - new Date(a.uuid)
+    );
     const currentProperties = propertyRef.current;
 
     const isFirstElementSame = JSON.stringify(currentProperties) === JSON.stringify(sortedProperties[0]);
