@@ -96,7 +96,7 @@ export default function Home({ initial_properties }) {
   };
 
   const sortPropertiesByBORatio = () => {
-    const sortedProperties = properties.sort((a, b) => {
+    const sortedProperties = [...updatedProperties].sort((a, b) => {
       const ratioComparison = b.b_o_ratio - a.b_o_ratio;
       if (ratioComparison === 0) {
         // b_o_ratio values are equal, use another property for comparison
@@ -113,7 +113,7 @@ export default function Home({ initial_properties }) {
 
   const sortPropertiesByUpdatedAtFromAPI = (updatedProperties) => {
     setProperties([]);
-    const sortedProperties = updatedProperties.sort(
+    const sortedProperties = [...updatedProperties].sort(
       (a, b) => new Date(b.uuid) - new Date(a.uuid)
     );
     const currentProperties = propertyRef.current;
