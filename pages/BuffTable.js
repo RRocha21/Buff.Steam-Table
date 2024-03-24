@@ -44,9 +44,6 @@ const StyledTr = styled.tr`
 export default function Home({ initial_properties }) {
   const [firstLoad, setFirstLoad] = useState(false);
   const [properties, setProperties] = useState([]);
-  const propertyRef = useRef();
-  const toggleUpdatedAtRef = useRef(false);
-  const toggleBORatioRef = useRef(false);
 
   const fetchData = async (properties) => {
     try {
@@ -57,13 +54,16 @@ export default function Home({ initial_properties }) {
 
       const parsedUpdatedProperties = JSON.parse(JSON.stringify(updatedProperties));
 
-      if (toggleUpdatedAtRef.current) {
-        sortPropertiesByUpdatedAtFromAPI(parsedUpdatedProperties);
-      } else if (toggleBORatioRef.current) {
-        sortPropertiesByBORatioFromAPI(parsedUpdatedProperties);
+      if (sortedProperties[0].b_o_ratio > 1.4) {
+        playNotificationAudio('Green');
+      } else if (sortedProperties[0].b_o_ratio > 1.35) {
+        playNotificationAudio('Blue');
       } else {
-        setProperties(parsedUpdatedProperties);
+        playNotificationAudio('Black');
       }
+
+      setProperties(parsedUpdatedProperties);
+
     } catch (error) {
       console.error('Error fetching data:', error.message);
     }
@@ -85,55 +85,6 @@ export default function Home({ initial_properties }) {
     }, 60000);
   }, []);
 
-  const sortPropertiesByUpdatedAt = () => {
-    const sortedProperties = properties.sort(
-      (a, b) => new Date(b.uuid) - new Date(a.uuid)
-    );
-    toggleUpdatedAtRef.current = true;
-    toggleBORatioRef.current = false;
-    propertyRef.current = sortedProperties[0];
-    setProperties(sortedProperties);
-  };
-
-  const sortPropertiesByBORatio = () => {
-    const sortedProperties = [...updatedProperties].sort((a, b) => {
-      const ratioComparison = b.b_o_ratio - a.b_o_ratio;
-      if (ratioComparison === 0) {
-        // b_o_ratio values are equal, use another property for comparison
-        // For example, if there's an 'id' property, you could use that
-        return a.id - b.id; // Replace 'id' with the actual property you want to use
-      }
-      return ratioComparison;
-    });
-    toggleBORatioRef.current = true;
-    toggleUpdatedAtRef.current = false;
-    propertyRef.current = sortedProperties[0];
-    setProperties(sortedProperties);
-  };
-
-  const sortPropertiesByUpdatedAtFromAPI = (updatedProperties) => {
-    setProperties([]);
-    const sortedProperties = [...updatedProperties].sort(
-      (a, b) => new Date(b.uuid) - new Date(a.uuid)
-    );
-    const currentProperties = propertyRef.current;
-
-    const isFirstElementSame = JSON.stringify(currentProperties) === JSON.stringify(sortedProperties[0]);
-
-    setProperties(sortedProperties);
-    propertyRef.current = sortedProperties[0];
-
-    if (!isFirstElementSame) {
-      if (sortedProperties[0].b_o_ratio > 1.4) {
-        playNotificationAudio('Green');
-      } else if (sortedProperties[0].b_o_ratio > 1.35) {
-        playNotificationAudio('Blue');
-      } else {
-        playNotificationAudio('Black');
-      }
-    }
-  };
-
   const playNotificationAudio = (color) => {
     // Assuming you have an audio element with an id of "notificationSound"
     let audioElement;
@@ -153,21 +104,6 @@ export default function Home({ initial_properties }) {
       console.error('Audio element not found!');
     }
   };
-
-  const sortPropertiesByBORatioFromAPI = (updatedProperties) => {
-    const sortedProperties = updatedProperties.sort((a, b) => {
-      const ratioComparison = b.b_o_ratio - a.b_o_ratio;
-      if (ratioComparison === 0) {
-        // b_o_ratio values are equal, use another property for comparison
-        // For example, if there's an 'id' property, you could use that
-        return a.id - b.id; // Replace 'id' with the actual property you want to use
-      }
-      return ratioComparison;
-    });
-    setProperties(sortedProperties);
-    propertyRef.current = sortedProperties[0];
-  };
-
   // ...
   
   const formatDateTime = (dateTimeString) => {
@@ -190,8 +126,6 @@ export default function Home({ initial_properties }) {
   return (
     <div style={{ width: '100%', height: '100%', backgroundColor: 'black', color: 'black' }}>
       <TableContainer style={{ backgroundColor: 'black', color: 'white' }}>
-        <Button onClick={sortPropertiesByUpdatedAt}>Sort by Updated At</Button>
-        <Button onClick={sortPropertiesByBORatio}>Sort by B/O Ratio</Button>
 
         <audio id="notificationSoundBlack">
           <source src="/Black.mp3" type="audio/mpeg" />
