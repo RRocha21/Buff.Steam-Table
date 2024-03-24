@@ -129,8 +129,6 @@ export default function Home({ initial_properties }) {
   return (
     <div style={{ width: '100%', height: '100%', backgroundColor: 'black', color: 'black' }}>
       <TableContainer style={{ backgroundColor: 'black', color: 'white' }}>
-        <Button onClick={sortPropertiesByUpdatedAt}>Sort by Updated At</Button>
-        {/* <Button onClick={sortPropertiesByBORatio}>Sort by B/O Ratio</Button> */}
 
         <audio id="notificationSoundBlack">
           <source src="/Black.mp3" type="audio/mpeg" />
