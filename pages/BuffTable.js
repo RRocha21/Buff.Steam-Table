@@ -156,7 +156,7 @@ export default function Home({ initial_properties }) {
           <tbody>
             {properties.map((property) => (
               <StyledTr
-                key={property.id}
+                key={property.uuid}
                 backgroundColor={
                   property.b_o_ratio > 1.4
                     ? 'darkgreen'
