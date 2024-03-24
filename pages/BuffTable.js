@@ -86,9 +86,15 @@ export default function Home({ initial_properties }) {
   }, []);
 
   const sortPropertiesByUpdatedAt = () => {
-    const sortedProperties = properties.sort(
-      (a, b) => new Date(b.updatedat) - new Date(a.updatedat)
-    );
+    const sortedProperties = updatedProperties.sort((a, b) => {
+      const dateComparison = new Date(b.updatedat) - new Date(a.updatedat);
+      if (dateComparison === 0) {
+        // Dates are equal, use another property for comparison
+        // For example, if there's an 'id' property, you could use that
+        return a.id - b.id; // Replace 'id' with the actual property you want to use
+      }
+      return dateComparison;
+    });
     toggleUpdatedAtRef.current = true;
     toggleBORatioRef.current = false;
     propertyRef.current = sortedProperties[0];
@@ -96,9 +102,15 @@ export default function Home({ initial_properties }) {
   };
 
   const sortPropertiesByBORatio = () => {
-    const sortedProperties = properties.sort(
-      (a, b) => b.b_o_ratio - a.b_o_ratio
-    );
+    const sortedProperties = properties.sort((a, b) => {
+      const ratioComparison = b.b_o_ratio - a.b_o_ratio;
+      if (ratioComparison === 0) {
+        // b_o_ratio values are equal, use another property for comparison
+        // For example, if there's an 'id' property, you could use that
+        return a.id - b.id; // Replace 'id' with the actual property you want to use
+      }
+      return ratioComparison;
+    });
     toggleBORatioRef.current = true;
     toggleUpdatedAtRef.current = false;
     propertyRef.current = sortedProperties[0];
@@ -107,9 +119,15 @@ export default function Home({ initial_properties }) {
 
   const sortPropertiesByUpdatedAtFromAPI = (updatedProperties) => {
     setProperties([]);
-    const sortedProperties = updatedProperties.sort(
-      (a, b) => new Date(b.updatedat) - new Date(a.updatedat)
-    );
+    const sortedProperties = updatedProperties.sort((a, b) => {
+      const dateComparison = new Date(b.updatedat) - new Date(a.updatedat);
+      if (dateComparison === 0) {
+        // Dates are equal, use another property for comparison
+        // For example, if there's an 'id' property, you could use that
+        return a.id - b.id; // Replace 'id' with the actual property you want to use
+      }
+      return dateComparison;
+    });
     const currentProperties = propertyRef.current;
 
     const isFirstElementSame = JSON.stringify(currentProperties) === JSON.stringify(sortedProperties[0]);
@@ -149,9 +167,15 @@ export default function Home({ initial_properties }) {
   };
 
   const sortPropertiesByBORatioFromAPI = (updatedProperties) => {
-    const sortedProperties = [...updatedProperties].sort(
-      (a, b) => b.b_o_ratio - a.b_o_ratio
-    );
+    const sortedProperties = properties.sort((a, b) => {
+      const ratioComparison = b.b_o_ratio - a.b_o_ratio;
+      if (ratioComparison === 0) {
+        // b_o_ratio values are equal, use another property for comparison
+        // For example, if there's an 'id' property, you could use that
+        return a.id - b.id; // Replace 'id' with the actual property you want to use
+      }
+      return ratioComparison;
+    });
     setProperties(sortedProperties);
     propertyRef.current = sortedProperties[0];
   };
