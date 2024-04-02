@@ -12,7 +12,7 @@ wss.on('connection', (ws) => {
 export default async function handler(req, res) {
   try {
     // Fetch data from the external server
-    const response = await fetch('http://144.64.9.162:8000/steam2buff');
+    const response = await fetch('http://82.155.128.144:8000/steam2buff');
     
     const data = await response.json();
     
